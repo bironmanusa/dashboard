@@ -1,12 +1,17 @@
-import  SelectorUI  from './components/SelectorUI.tsx'
+import SelectorUI  from './components/SelectorUI.tsx'
 import IndicatorUI from './components/IndicatorUI.tsx'
 import DataFetcher from './functions/DataFetcher';
+import TableUI from './components/TableUI';
+import ChartUI from './components/ChartUI';
 import './App.css'
 import { Grid } from '@mui/material'
 
 function App() {
 
   const dataFetcherOutput = DataFetcher();
+  const hourly = dataFetcherOutput.data?.hourly;
+  const loading = dataFetcherOutput.loading;
+  const error = dataFetcherOutput.error;
 
   return (
     <>
@@ -66,12 +71,26 @@ function App() {
         {/* Gráfico */}
         <Grid
           sx={{ dispaly: { xs: "none", md: "block" } }} 
-          size={{ xs: 12, md: 6}}>
-            Elemento: Gráfico
+          size={{ xs: 6, md: 6}}>
+            <ChartUI 
+              loading={loading}
+              error={error}
+              labels={hourly?.time ?? []}
+              values1={hourly?.temperature_2m ?? []} 
+              values2={hourly?.wind_speed_10m ?? []}
+            />
           </Grid>
 
         {/* Tabla */}
-        <Grid size={{ xs: 12, md: 6}}>Elemento: Tabla</Grid>
+        <Grid size={{ xs: 12, md: 6}}>
+          <TableUI 
+            loading={loading}
+            error={error}
+            labels={hourly?.time ?? []}
+            values1={hourly?.temperature_2m ?? []} 
+            values2={hourly?.wind_speed_10m ?? []}
+          />
+        </Grid>
 
         {/* Información adicional */}
         <Grid size={{ xs: 12, md: 12}}>Elemento: Información adicional</Grid>
