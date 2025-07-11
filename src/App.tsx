@@ -3,12 +3,24 @@ import IndicatorUI from './components/IndicatorUI.tsx'
 import DataFetcher from './functions/DataFetcher';
 import TableUI from './components/TableUI';
 import ChartUI from './components/ChartUI';
+import { useState } from 'react';
 import './App.css'
 import { Grid } from '@mui/material'
 
 function App() {
+  const [city, setCity] = useState<string>("guayaquil");
 
-  const dataFetcherOutput = DataFetcher();
+  const cityCoords: Record<string, { lat: number, lon: number }> = {
+    guayaquil: { lat: -2.1962, lon: -79.8862 },
+    quito: { lat: -0.1807, lon: -78.4678 },
+    manta: { lat: -0.9677, lon: -80.7089 },
+    cuenca: { lat: -2.9006, lon: -79.0045 }
+  };
+
+  const coords = cityCoords[city];
+
+  // Pasa las coordenadas a DataFetcher
+  const dataFetcherOutput = DataFetcher(coords.lat, coords.lon);
   const hourly = dataFetcherOutput.data?.hourly;
   const loading = dataFetcherOutput.loading;
   const error = dataFetcherOutput.error;
@@ -26,7 +38,7 @@ function App() {
         <Grid size={{ xs: 12 }}>Elemento: Alertas</Grid>
 
         {/* Selector */}
-        <Grid size={{ xs: 12, md: 3}}><SelectorUI /></Grid>
+        <Grid size={{ xs: 12, md: 3}}><SelectorUI onCityChange={setCity} /></Grid>
 
         {/* Indicadores */}
         <Grid container size={{ xs: 12, md: 9 }} >
